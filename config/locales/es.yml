@@ -1,0 +1,31 @@
+es:
+  activerecord:
+    attributes:
+      user:
+        email: "Correo electrónico"
+        password: "Contraseña"
+      company:
+        nit: "NIT"
+        name: "Nombre"
+        user: "Usuario"
+    errors:
+      messages:
+        blank: "no puede estar en blanco"
+        too_short: "es demasiado corto (mínimo %{count} caracteres)"
+        too_long: "es demasiado largo (máximo %{count} caracteres)"
+        taken: "ya existe"
+      models:
+        user:
+          attributes:
+            email:
+              taken: "ya existe"
+            password:
+              too_short: "es demasiado corta (mínimo %{count} caracteres)"
+        company:
+          attributes:
+            user:
+              blank: "debe ser válido"
+              required: "debe ser válido"
+            nit:
+              taken: "ya existe"
+              blank: "no puede estar en blanco"
