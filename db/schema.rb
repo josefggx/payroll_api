@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_18_002255) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_21_001033) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -24,6 +24,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_002255) do
     t.index ["user_id"], name: "index_companies_on_user_id"
   end
 
+  create_table "contracts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "job_title"
+    t.string "contract_category"
+    t.string "term"
+    t.string "health_provider"
+    t.string "risk_type"
+    t.date "initial_date"
+    t.date "end_date"
+    t.uuid "worker_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["worker_id"], name: "index_contracts_on_worker_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", null: false
     t.string "password_digest", null: false
@@ -31,5 +45,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_002255) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "wages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "base_salary", null: false
+    t.boolean "transport_subsidy", null: false
+    t.date "initial_date", null: false
+    t.date "end_date", null: false
+    t.uuid "contract_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contract_id"], name: "index_wages_on_contract_id"
+  end
+
+  create_table "workers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "id_number"
+    t.uuid "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_workers_on_company_id"
+  end
+
   add_foreign_key "companies", "users"
+  add_foreign_key "contracts", "workers"
+  add_foreign_key "wages", "contracts"
+  add_foreign_key "workers", "companies"
 end

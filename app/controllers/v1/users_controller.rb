@@ -24,7 +24,6 @@ module V1
       if @user.save
         render json: @user, status: :created
       else
-        # render 'errors/error', locals: { object: @user }, status: :unprocessable_entity
         render json: render_errors(@user.errors), status: :unprocessable_entity
       end
     end
@@ -33,7 +32,6 @@ module V1
       if @user.update(user_params)
         render json: @user, status: :ok
       else
-        # render 'errors/error', locals: { object: @user }, status: :unprocessable_entity
         render json: render_errors(@user.errors), status: :unprocessable_entity
       end
     end
@@ -42,7 +40,6 @@ module V1
       if @user.destroy
         head :no_content
       else
-        # render 'errors/error', locals: { object: @user }, status: :unprocessable_entity
         render json: render_errors(@user.errors), status: :unprocessable_entity
       end
     end
