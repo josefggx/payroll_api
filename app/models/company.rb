@@ -3,4 +3,7 @@ class Company < ApplicationRecord
   validates :name, presence: { code: '0203' }, length: { in: 3..30, code: '0204' }
 
   belongs_to :user
+  has_many :workers
+  has_many :contracts, through: :workers
+  has_many :wages, through: :contracts
 end

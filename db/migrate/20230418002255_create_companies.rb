@@ -3,7 +3,7 @@ class CreateCompanies < ActiveRecord::Migration[7.0]
     create_table :companies, id: :uuid do |t|
       t.string :name, null: false
       t.string :nit, null: false
-      t.belongs_to :user, type: :uuid, null: false, foreign_key: true
+      t.references :user, type: :uuid, null: false, foreign_key: true
 
       t.timestamps
     end
