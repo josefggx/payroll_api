@@ -6,7 +6,8 @@ class Contract < ApplicationRecord
   validates :risk_type, presence: true
   validates :initial_date, presence: true
   validates :worker, presence: true
+  validates_associated :wages
 
   belongs_to :worker
-  has_many :wages
+  has_many :wages, dependent: :destroy
 end
