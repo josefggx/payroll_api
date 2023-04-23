@@ -7,6 +7,11 @@ module ErrorResponses
     rescue_from ActiveRecord::RecordNotFound, with: :render_error_not_found
   end
 
+  def render_error_wrong_credentials
+    render json: { error: { message: 'Email or password are invalid.', code: '0001', object: 'Authentication' } },
+           status: :unauthorized
+  end
+
   def render_error_not_authenticated
     render json: { error: { message: "You're not authenticated.", code: '0002', object: 'Authentication' } },
            status: :unauthorized
@@ -22,8 +27,12 @@ module ErrorResponses
            status: :not_found
   end
 
-  def render_errors(errors)
-    error_objects = generate_error_objects(errors)
+  def render_errors(*objects)
+    error_objects = []
+
+    objects.each do |object|
+      error_objects.concat(generate_error_objects(object.errors))
+    end
 
     { error: error_objects }
   end
@@ -43,6 +52,8 @@ module ErrorResponses
   end
 
   def formatted_error_object(errors, attribute, error)
+    return nil if error[:error] == :invalid
+
     attribute_name = errors.instance_variable_get('@base').class.human_attribute_name(attribute)
     message = "#{attribute_name} #{errors.generate_message(attribute, error[:error], error.except(:error))}"
 
