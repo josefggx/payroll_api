@@ -5,29 +5,29 @@ module V1
     before_action :set_worker, only: %i[show update destroy]
 
     def index
-      @workers = @company.workers
-      render json: @workers, status: :ok
+      @workers = @company.workers.includes(:contract, :wages).all
     end
 
     def create
-      @worker = @company.workers.new(worker_params)
+      result = WorkerCreatorService.create_worker(params)
+      @worker = result[:worker]
 
-      if @worker.save
-        render json: @worker, status: :created
+      if @worker.persisted?
+        @worker
       else
-        render json: render_errors(@worker.errors), status: :unprocessable_entity
+        render json: render_errors(*result.values), status: :unprocessable_entity
       end
     end
 
     def show
-      render json: @worker
+      @worker = Worker.includes(:company, :contract, :wages).find(params[:id])
     end
 
     def update
-      if @worker.update(worker_params)
+      if @worker.update(worker_update_params)
         render json: @worker, status: :ok
       else
-        render json: render_errors(@worker.errors), status: :unprocessable_entity
+        render json: render_errors(@worker), status: :unprocessable_entity
       end
     end
 
@@ -35,11 +35,15 @@ module V1
       if @worker.destroy
         head :no_content
       else
-        render json: render_errors(@worker.errors), status: :unprocessable_entity
+        render json: render_errors(@worker), status: :unprocessable_entity
       end
     end
 
     private
+
+    def worker_update_params
+      params.require(:worker).permit(:name, :id_number)
+    end
 
     def set_company
       @company = Company.find(params[:company_id])
@@ -47,12 +51,6 @@ module V1
 
     def set_worker
       @worker = @company.workers.find(params[:id])
-    end
-
-    def worker_params
-      # params.require(:worker).permit(:name, :id_number, :job_title, :contract_category, :term, :base_salary,
-      #                                :transport_subsidy, :initial_date, :end_date)
-      params.require(:worker).permit(:name, :id_number)
     end
 
     def authorize
