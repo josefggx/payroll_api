@@ -7,7 +7,7 @@ class CreateContracts < ActiveRecord::Migration[7.0]
       t.string :health_provider, null: false
       t.string :risk_type, null: false
       t.date :initial_date, null: false
-      t.date :end_date, null: false
+      t.date :end_date, null: true
       t.references :worker, null: false, foreign_key: true, type: :uuid, unique: true
 
       t.timestamps

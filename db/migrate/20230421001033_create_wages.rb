@@ -4,7 +4,7 @@ class CreateWages < ActiveRecord::Migration[7.0]
       t.bigint :base_salary, null: false
       t.boolean :transport_subsidy, null: false
       t.date :initial_date, null: false
-      t.date :end_date, null: false
+      t.date :end_date, null: true
       t.references :contract, null: false, foreign_key: true, type: :uuid
 
       t.timestamps
