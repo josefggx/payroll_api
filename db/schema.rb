@@ -49,7 +49,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_21_001033) do
     t.bigint "base_salary", null: false
     t.boolean "transport_subsidy", null: false
     t.date "initial_date", null: false
-    t.date "end_date", null: false
+    t.date "end_date"
     t.uuid "contract_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
