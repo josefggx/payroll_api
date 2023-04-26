@@ -5,8 +5,12 @@ Rails.application.routes.draw do
     resources :users
     resources :companies do
       resources :workers
-      resources :contracts
-      resources :wages
+      resources :contracts, only: %i[index show update] do
+        resources :wages, only: %i[index create], module: :contracts
+        get '/current_wage', to: 'contracts/current_wage#show'
+        put '/current_wage', to: 'contracts/current_wage#update'
+        delete '/current_wage', to: 'contracts/current_wage#destroy'
+      end
     end
   end
 end
