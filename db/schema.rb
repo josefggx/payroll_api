@@ -15,9 +15,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_21_001033) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "contract_terms", ["fixed", "indefinite"]
+  create_enum "risk_type", ["risk_1", "risk_2", "risk_3", "risk_4", "risk_5"]
+
   create_table "companies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
-    t.string "nit", null: false
+    t.integer "nit", null: false
     t.uuid "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -25,12 +30,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_21_001033) do
   end
 
   create_table "contracts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "job_title"
-    t.string "contract_category"
-    t.string "term"
-    t.string "health_provider"
-    t.string "risk_type"
-    t.date "initial_date"
+    t.string "job_title", null: false
+    t.enum "term", null: false, enum_type: "contract_terms"
+    t.string "health_provider", null: false
+    t.enum "risk_type", null: false, enum_type: "risk_type"
+    t.date "initial_date", null: false
     t.date "end_date"
     t.uuid "worker_id", null: false
     t.datetime "created_at", null: false
@@ -57,8 +61,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_21_001033) do
   end
 
   create_table "workers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name"
-    t.string "id_number"
+    t.string "name", null: false
+    t.integer "id_number", null: false
     t.uuid "company_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

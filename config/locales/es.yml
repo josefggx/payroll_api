@@ -29,3 +29,15 @@ es:
             nit:
               taken: "ya existe"
               blank: "no puede estar en blanco"
+              not_a_number: "debe ser un número positivo"
+              greater_than: "debe ser un número positivo"
+              wrong_length: "debe tener exactamente 9 dígitos"
+        contract:
+          attributes:
+            initial_date:
+              blank: "debe ser una fecha válida y en formato (AAAA-MM-DD)"
+              greater_than: "debe ser una fecha mayor a %{count}"
+            end_date:
+              greater_than_or_equal_to: "debe ser mayor o igual que la fecha inicial"
+              missing_end_date: "debe estar presente para los contratoa a término fijo"
+              unexpected_end_date: "debe estar vacía para los contratos a término indefinido"
