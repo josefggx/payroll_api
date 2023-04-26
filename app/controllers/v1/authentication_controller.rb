@@ -10,7 +10,7 @@ module V1
       if @user&.authenticate(params[:password])
         token = jwt_encode(user_id: @user.id)
 
-        render json: { token: }, status: :ok
+        render json: { data: { token: } }, status: :ok
       else
         render_error_wrong_credentials
       end

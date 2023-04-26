@@ -2,20 +2,19 @@ module V1
   class WorkersController < ApplicationController
     before_action :set_company
     before_action :authorize
-    before_action :set_worker, only: %i[show update destroy]
+    before_action :set_worker, only: %i[update destroy]
 
     def index
       @workers = @company.workers.includes(:contract, :wages).all
     end
 
     def create
-      result = WorkerCreatorService.create_worker(params)
-      @worker = result[:worker]
+      result = WorkerCreationService.call(worker_create_params)
 
-      if @worker.persisted?
-        @worker
+      if result[:success]
+        @worker = result[:worker]
       else
-        render json: render_errors(*result.values), status: :unprocessable_entity
+        render_errors(*result[:errors])
       end
     end
 
@@ -27,7 +26,7 @@ module V1
       if @worker.update(worker_update_params)
         render json: @worker, status: :ok
       else
-        render json: render_errors(@worker), status: :unprocessable_entity
+        render_errors(@worker.errors)
       end
     end
 
@@ -35,11 +34,17 @@ module V1
       if @worker.destroy
         head :no_content
       else
-        render json: render_errors(@worker), status: :unprocessable_entity
+        render_errors(@worker.errors)
       end
     end
 
     private
+
+    def worker_create_params
+      params.require(:worker).permit(:name, :id_number, :company_id, :job_title, :term, :risk_type,
+                                     :health_provider, :base_salary, :transport_subsidy, :initial_date, :end_date)
+            .merge(company_id: params[:company_id])
+    end
 
     def worker_update_params
       params.require(:worker).permit(:name, :id_number)
