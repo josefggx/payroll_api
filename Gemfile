@@ -32,6 +32,9 @@ gem 'rubocop-rails', '~> 2.19', '>= 2.19.1'
 # Annotate Rails classes with schema and routes info [https://github.com/ctran/annotate_models]
 gem 'annotate'
 
+# A simple date validator for Rails. [https://github.com/codegram/date_validator]
+gem 'date_validator'
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
