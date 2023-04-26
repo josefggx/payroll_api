@@ -4,7 +4,6 @@ json.id_number @worker.id_number
 json.company_id @worker.company&.id
 json.company_name @worker.company&.name
 json.job_title @worker.contract&.job_title
-json.contract_category @worker.contract&.contract_category
 json.term @worker.contract&.term
 json.risk_type @worker.contract&.risk_type
 json.health_provider @worker.contract&.health_provider
