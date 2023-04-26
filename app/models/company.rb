@@ -1,8 +1,8 @@
 class Company < ApplicationRecord
   validates :nit, presence: { code: '0201' },
                   uniqueness: { code: '0202' },
-                  numericality: { greater_than: 0, code: '0203' },
-                  length: { is: 9, code: '0204' }
+                  numericality: { greater_than: 0, code: '0203', if: -> { nit.present? } },
+                  length: { is: 9, code: '0204', if: -> { nit.present? } }
 
   validates :name, presence: { code: '0211' }, length: { in: 3..30, code: '0212' }
 

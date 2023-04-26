@@ -14,7 +14,7 @@ module V1
       if @company.save
         render json: @company, status: :created
       else
-        render json: render_errors(@company), status: :unprocessable_entity
+        render_errors(@company.errors)
       end
     end
 
@@ -26,7 +26,7 @@ module V1
       if @company.update(company_params)
         render json: @company, status: :ok
       else
-        render json: render_errors(@company), status: :unprocessable_entity
+        render_errors(@company.errors)
       end
     end
 
@@ -34,7 +34,7 @@ module V1
       if @company.destroy
         head :no_content
       else
-        render json: render_errors(@company), status: :unprocessable_entity
+        render_errors(@company.errors)
       end
     end
 
