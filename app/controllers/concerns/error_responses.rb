@@ -27,17 +27,23 @@ module ErrorResponses
            status: :not_found
   end
 
-  def render_errors(*objects)
-    error_objects = []
+  def render_errors(*errors)
+    errors = build_errors_array(errors)
 
-    objects.each do |object|
-      error_objects.concat(generate_error_objects(object.errors))
-    end
-
-    { error: error_objects }
+    render json: { errors: }, status: :unprocessable_entity
   end
 
   private
+
+  def build_errors_array(errors)
+    error_objects = []
+
+    errors.compact.each do |error|
+      error_objects.concat(generate_error_objects(error))
+    end
+
+    error_objects
+  end
 
   def generate_error_objects(errors)
     error_objects = []
@@ -52,15 +58,13 @@ module ErrorResponses
   end
 
   def formatted_error_object(errors, attribute, error)
-    return nil if error[:error] == :invalid
+    object = errors.instance_variable_get('@base').class
+    return nil unless object.column_names.include?(attribute.to_s) || attribute == :password
 
-    attribute_name = errors.instance_variable_get('@base').class.human_attribute_name(attribute)
-    message = "#{attribute_name} #{errors.generate_message(attribute, error[:error], error.except(:error))}"
+    message = "#{object.human_attribute_name(attribute)} #{errors.generate_message(attribute, error[:error],
+                                                                                   count: error[:count])}"
+    code = ERROR_CODES.dig(object.name&.underscore, attribute.to_s, error[:error].to_s)
 
-    {
-      message:,
-      object: errors.instance_variable_get('@base').class.to_s,
-      code: error[:code]
-    }.compact
+    { message:, object:, code: }.compact
   end
 end

@@ -1,0 +1,12 @@
+worker:
+  name:
+    blank: '0301'
+
+contract:
+  end_date:
+    not_a_date: '0462'
+
+wage:
+  base_salary:
+    greater_than_or_equal_to: '5002'
+
