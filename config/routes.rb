@@ -11,6 +11,8 @@ Rails.application.routes.draw do
         put '/current_wage', to: 'contracts/current_wage#update'
         delete '/current_wage', to: 'contracts/current_wage#destroy'
       end
+      resources :periods, only: %i[index create show destroy]
+      resources :payrolls, only: %i[index create show destroy] # TODO: remove the create route at the end version
     end
   end
 end
