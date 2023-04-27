@@ -2,6 +2,9 @@ class Contract < ApplicationRecord
   include DateConstants
   include PayrollHelper
 
+  belongs_to :worker
+  has_many :wages, validate: true, dependent: :destroy
+
   validates :worker, presence: true
   validates :job_title, presence: true
   validates :health_provider, presence: true
@@ -20,12 +23,13 @@ class Contract < ApplicationRecord
 
   validate :validate_end_date_presence
 
-  belongs_to :worker
-  has_many :wages, validate: true, dependent: :destroy
-
   before_update :update_associated_salaries
 
   def update_associated_salaries
+    return unless changed?
+
+    puts "I RUNNED"
+
     oldest_salary = wages.order(initial_date: :asc).first
     newest_salary = wages.order(initial_date: :desc).first
     newest_base_salary = newest_salary&.base_salary
@@ -37,7 +41,7 @@ class Contract < ApplicationRecord
       newest_salary&.update_columns(end_date: end_date)
     elsif end_date_changed? && !initial_date_changed? && (newest_salary&.end_date.nil? || newest_salary.end_date <= end_date)
       newest_salary&.update_columns(end_date: end_date)
-    elsif initial_date_changed? && initial_date <= oldest_salary&.end_date
+    elsif initial_date_changed? && (oldest_salary&.end_date.nil? || initial_date <= oldest_salary&.end_date)
       wages.destroy_all
       wages.create(base_salary: oldest_base_salary, transport_subsidy:  oldest_transport_subsidiary,
                    initial_date: initial_date, end_date: end_date)
