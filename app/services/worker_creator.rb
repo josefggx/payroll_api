@@ -1,4 +1,4 @@
-class WorkerCreationService
+class WorkerCreator
   def self.call(params)
     new(params).create_worker
   end

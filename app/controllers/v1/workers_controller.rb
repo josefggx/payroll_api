@@ -9,7 +9,7 @@ module V1
     end
 
     def create
-      result = WorkerCreationService.call(worker_create_params)
+      result = WorkerCreator.call(worker_create_params)
 
       if result[:success]
         @worker = result[:worker]
@@ -19,7 +19,7 @@ module V1
     end
 
     def show
-      @worker = Worker.includes(:company, :contract, :wages).find(params[:id])
+      @worker = @company.workers.includes(:company, :contract, :wages).find(params[:id])
     end
 
     def update
