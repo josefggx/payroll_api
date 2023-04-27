@@ -18,10 +18,12 @@ module V1
       end
 
       def destroy
-        if @current_wage.destroy
-          head :no_content
+        if @contract.wages.count <= 1
+          @current_wage&.errors&.add(:id, :cannot_delete_last_wage)
+          render_errors(@current_wage&.errors)
         else
-          render_errors(@current_wage.errors)
+          @current_wage&.destroy
+          head :no_content
         end
       end
 
