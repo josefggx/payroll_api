@@ -1,0 +1,51 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  period: one
+  worker: one
+  base_salary: 1.5
+  transport_subsidy: 1.5
+  additional_salary_income: 1.5
+  non_salary_income: 1.5
+  worker_healthcare: 1.5
+  worker_pension: 1.5
+  solidarity_fund: 1.5
+  subsistence_account: 1.5
+  deductions: 1.5
+  company_healthcare: 1.5
+  company_pension: 1.5
+  arl: 1.5
+  compensation_fund: 1.5
+  icbf: 1.5
+  sena: 1.5
+  severance: 1.5
+  interest: 1.5
+  premium: 1.5
+  vacation: 1.5
+  worker_payment: 1.5
+  total_company_cost: 1.5
+
+two:
+  period: two
+  worker: two
+  base_salary: 1.5
+  transport_subsidy: 1.5
+  additional_salary_income: 1.5
+  non_salary_income: 1.5
+  worker_healthcare: 1.5
+  worker_pension: 1.5
+  solidarity_fund: 1.5
+  subsistence_account: 1.5
+  deductions: 1.5
+  company_healthcare: 1.5
+  company_pension: 1.5
+  arl: 1.5
+  compensation_fund: 1.5
+  icbf: 1.5
+  sena: 1.5
+  severance: 1.5
+  interest: 1.5
+  premium: 1.5
+  vacation: 1.5
+  worker_payment: 1.5
+  total_company_cost: 1.5
