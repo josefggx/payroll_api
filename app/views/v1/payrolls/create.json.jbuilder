@@ -1,0 +1,25 @@
+json.data do
+  json.id @payroll.id
+  json.worker_name @payroll.worker.name
+  json.base_salary @payroll.base_salary
+  json.transport_subsidy @payroll.transport_subsidy
+  json.additional_salary_income @payroll.additional_salary_income
+  json.non_salary_income @payroll.non_salary_income
+  json.worker_healthcare @payroll.worker_healthcare
+  json.worker_pension @payroll.worker_pension
+  json.solidarity_fund @payroll.solidarity_fund
+  json.subsistence_account @payroll.subsistence_account
+  json.deductions @payroll.deductions
+  json.company_healthcare @payroll.company_healthcare
+  json.company_pension @payroll.company_pension
+  json.arl @payroll.arl
+  json.compensation_fund @payroll.compensation_fund
+  json.icbf @payroll.icbf
+  json.sena @payroll.sena
+  json.severance @payroll.severance
+  json.interest @payroll.interest
+  json.premium @payroll.premium
+  json.vacation @payroll.vacation
+  json.worker_payment @payroll.worker_payment
+  json.total_company_cost @payroll.total_company_cost
+end

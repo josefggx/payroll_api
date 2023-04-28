@@ -15,7 +15,7 @@ module V1
       result = PayrollCreator.call(payroll_params)
 
       if result[:success]
-        render json: { payroll: result[:payroll] }
+        @payroll = result[:payroll]
       else
         puts "ERRORES: #{result[:errors].inspect}"
 
@@ -41,7 +41,7 @@ module V1
     private
 
     def payroll_params
-      params.require(:payroll).permit(:period_id, :worker_id).merge(company_id: params[:company_id])
+      params.require(:payroll).permit(:period_id, :worker_id)
     end
 
     def set_company
