@@ -1,38 +1,27 @@
 class PayrollCalculator
   include PayrollHelper
 
-  def self.call(worker, period)
-    new(worker, period).calculate_payroll
+  def self.call(worker, period, payroll = nil)
+    new(worker, period, payroll).calculate_payroll
   end
 
-  def initialize(worker, period)
+  def initialize(worker, period, payroll = nil)
     @worker = worker
     @period = period
+    @payroll = payroll
     @base_salary = 0
     @transport_subsidy = 0
   end
 
   def calculate_payroll
-    wages = find_wages_for_period
-    days_in_month = Time.days_in_month(@period.start_date.month, @period.start_date.year)
+    calculate_average_base_salary
 
-    wages.each_with_index do |wage, i|
-      days_worked = calculate_days_worked(wages, days_in_month, wage, i)
+    puts "BASE SALARY #{@base_salary}"
 
-      wage_base_salary = calculate_base_salary(wage.base_salary, days_worked, days_in_month)
-      @base_salary += wage_base_salary
-
-      wage_transport_subsidy = calculate_transport_subsidy(wage.transport_subsidy, days_worked, days_in_month)
-      @transport_subsidy += wage_transport_subsidy
-    end
-
-    # additional_salary_income = @worker.payroll_additions.salary_income(:sum)
-    additional_salary_income = 0
+    additional_salary_income = calculate_extra_salary_income
+    non_salary_income = calculate_non_salary_income
 
     salary_for_ss = @base_salary + additional_salary_income
-
-    # additional_non_salary_income = @worker.payroll_additions.non_salary_income(:sum)
-    non_salary_income = 0
     salary_for_social_benefits = salary_for_ss + @transport_subsidy
 
     total_worker_income = salary_for_social_benefits + non_salary_income
@@ -41,26 +30,27 @@ class PayrollCalculator
     worker_pension = salary_for_ss * WORKER_PENSION
     solidarity_fund = salary_for_ss >= (MINIMUM_WAGE * 4) ? (salary_for_ss * SOLIDARITY_FUND) : 0
     subsistence_account = calculate_subsistence_acc(salary_for_ss)
-
-    # deductions = @additions.sum(&:deduction)
-    deductions = 0
+    deductions = calculate_deductions
 
     total_retention_deductions = worker_healthcare + worker_pension + solidarity_fund + subsistence_account + deductions
 
     company_healthcare = salary_for_ss >= (MINIMUM_WAGE * 10) ? (salary_for_ss * COMPANY_HEALTHCARE) : 0
     company_pension = salary_for_ss * COMPANY_PENSION
     arl = salary_for_ss * RISK_TYPES[@worker.contract.risk_type]
+
     total_social_security = company_healthcare + company_pension + arl
 
     compensation_fund = salary_for_ss * COMPENSATION_FUND
     icbf = salary_for_ss >= (MINIMUM_WAGE * 10) ? (salary_for_ss * ICBF) : 0
     sena = salary_for_ss >= (MINIMUM_WAGE * 10) ? (salary_for_ss * SENA) : 0
+
     total_parafiscal_charges = compensation_fund + icbf + sena
 
     severance = salary_for_social_benefits * SEVERANCE
     interest = severance * INTEREST
     premium = salary_for_social_benefits * PREMIUM
     vacation = salary_for_ss * VACATIONS
+
     total_social_benefits = severance + interest + premium + vacation
 
     worker_payment = total_worker_income - total_retention_deductions
@@ -98,19 +88,32 @@ class PayrollCalculator
 
   private
 
-  def find_wages_for_period
-    @worker.wages
-           .where("(wages.initial_date <= ? AND wages.end_date >= ?) OR (wages.initial_date BETWEEN ? AND ?) OR
-                    (wages.end_date BETWEEN ? AND ?)", @period.end_date, @period.start_date, @period.start_date,
-                  @period.end_date, @period.start_date, @period.end_date)
+  def calculate_average_base_salary
+    wages = @worker.find_worker_wages_for_period(@period)
+    days_in_month = Time.days_in_month(@period.start_date.month, @period.start_date.year)
+
+    wages.each do |wage|
+      days_worked = calculate_days_worked(wages, days_in_month, wage)
+
+      puts "days_worked: #{days_worked}"
+
+      wage_base_salary = calculate_base_salary(wage.base_salary, days_worked, days_in_month)
+
+      puts "wage_base_salary: #{wage_base_salary}"
+
+      @base_salary += wage_base_salary
+
+      wage_transport_subsidy = calculate_transport_subsidy(wage.transport_subsidy, days_worked, days_in_month)
+      @transport_subsidy += wage_transport_subsidy
+    end
   end
 
-  def calculate_days_worked(wages, days_in_month, wage, i)
+  def calculate_days_worked(wages, days_in_month, wage)
     days_worked = [wage.end_date, @period.end_date].compact.min -
                   [wage.initial_date, @period.start_date].compact.max + 1
 
-    days_worked += 2 if days_in_month == 28 && (i == wages.size - 1) && wages.size > 1
-    days_worked -= 1 if days_in_month == 31 && (i == wages.size - 1) && wages.size > 1
+    days_worked += 2 if days_in_month == 28 && (wage == wages.last) && wages.count > 1
+    days_worked -= 1 if days_in_month == 31 && (wage == wages.last)
 
     days_worked
   end
@@ -142,5 +145,20 @@ class PayrollCalculator
                  end
 
     base_salary_for_ss * percentage
+  end
+
+  def calculate_extra_salary_income
+    deductions = @payroll&.payroll_additions&.salary_income
+    deductions&.sum(:amount) || 0
+  end
+
+  def calculate_non_salary_income
+    deductions = @payroll&.payroll_additions&.non_salary_income
+    deductions&.sum(:amount) || 0
+  end
+
+  def calculate_deductions
+    deductions = @payroll&.payroll_additions&.deductions
+    deductions&.sum(:amount) || 0
   end
 end

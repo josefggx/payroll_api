@@ -3,16 +3,19 @@ module V1
     before_action :set_company
     before_action :authorize
     before_action :set_payroll, only: %i[show destroy]
+    before_action :set_worker, only: %i[create]
+    before_action :set_period, only: %i[create]
 
     def index
       @payrolls = @company.payrolls
 
+      puts "PERIOD: #{@period}"
+
       render json: @payrolls, status: :ok
     end
 
-
     def create
-      result = PayrollCreator.call(payroll_params)
+      result = PayrollCreator.call(@worker, @period)
 
       if result[:success]
         @payroll = result[:payroll]
@@ -49,7 +52,15 @@ module V1
     end
 
     def set_payroll
-      @payroll = Payroll.find(params[:id])
+      @payroll = @company.payrolls.find(params[:id])
+    end
+
+    def set_worker
+      @worker = @company.workers.find(payroll_params[:worker_id])
+    end
+
+    def set_period
+      @period = @company.periods.find(payroll_params[:period_id])
     end
 
     def authorize
