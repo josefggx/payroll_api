@@ -3,27 +3,27 @@ class CreatePayrolls < ActiveRecord::Migration[7.0]
     create_table :payrolls, id: :uuid do |t|
       t.references :period, null: false, foreign_key: true, type: :uuid
       t.references :worker, null: false, foreign_key: true, type: :uuid
-      t.float :base_salary, null: false
-      t.float :transport_subsidy, null: false
-      t.float :additional_salary_income, null: false
-      t.float :non_salary_income, null: false
-      t.float :worker_healthcare, null: false
-      t.float :worker_pension, null: false
-      t.float :solidarity_fund, null: false
-      t.float :subsistence_account, null: false
-      t.float :deductions, null: false
-      t.float :company_healthcare, null: false
-      t.float :company_pension, null: false
-      t.float :arl, null: false
-      t.float :compensation_fund, null: false
-      t.float :icbf, null: false
-      t.float :sena, null: false
-      t.float :severance, null: false
-      t.float :interest, null: false
-      t.float :premium, null: false
-      t.float :vacation, null: false
-      t.float :worker_payment, null: false
-      t.float :total_company_cost, null: false
+      t.decimal :base_salary, precision: 15, scale: 2, null: false
+      t.decimal :transport_subsidy, precision: 15, scale: 2, null: false
+      t.decimal :additional_salary_income, precision: 15, scale: 2, null: false
+      t.decimal :non_salary_income, precision: 15, scale: 2, null: false
+      t.decimal :worker_healthcare, precision: 15, scale: 2, null: false
+      t.decimal :worker_pension, precision: 15, scale: 2, null: false
+      t.decimal :solidarity_fund, precision: 15, scale: 2, null: false
+      t.decimal :subsistence_account, precision: 15, scale: 2, null: false
+      t.decimal :deductions, precision: 15, scale: 2, null: false
+      t.decimal :company_healthcare, precision: 15, scale: 2, null: false
+      t.decimal :company_pension, precision: 15, scale: 2, null: false
+      t.decimal :arl, precision: 15, scale: 2, null: false
+      t.decimal :compensation_fund, precision: 15, scale: 2, null: false
+      t.decimal :icbf, precision: 15, scale: 2, null: false
+      t.decimal :sena, precision: 15, scale: 2, null: false
+      t.decimal :severance, precision: 15, scale: 2, null: false
+      t.decimal :interest, precision: 15, scale: 2, null: false
+      t.decimal :premium, precision: 15, scale: 2, null: false
+      t.decimal :vacation, precision: 15, scale: 2, null: false
+      t.decimal :worker_payment, precision: 15, scale: 2, null: false
+      t.decimal :total_company_cost, precision: 15, scale: 2, null: false
 
       t.timestamps
     end
