@@ -1,8 +1,10 @@
 class Period < ApplicationRecord
   belongs_to :company
   has_many :payrolls, dependent: :destroy
+  has_many :payroll_additions, through: :payrolls
 
   attr_accessor :year, :month
+
   validate :validate_year
   validate :validate_month
   validate :validate_unique_date

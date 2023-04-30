@@ -1,21 +1,27 @@
 class Payroll < ApplicationRecord
   belongs_to :period
   belongs_to :worker
-  has_many :payroll_additions
+  has_many :payroll_additions, dependent: :destroy
   has_one :company, through: :period
+  has_many :wages, through: :period
 
   validates_uniqueness_of :worker_id, scope: :period_id
-  validates :worker_payment, numericality: { greater_than: 0 }
+  validates :worker_payment, numericality: { greater_than: 0 }, if: :worker_valid_for_period?
 
-  validate :worker_valid_for_period
+  validate :validate_worker_valid_for_period
 
-  def worker_valid_for_period
-    if worker.wages
-             .where("(wages.initial_date <= ? AND wages.end_date >= ?) OR (wages.initial_date BETWEEN ? AND ?) OR
-                    (wages.end_date BETWEEN ? AND ?)", period.end_date, period.start_date, period.start_date,
-                    period.end_date, period.start_date, period.end_date).empty?
+  def recalculate!
+    result = PayrollUpdater.call(self)
+    result[:payroll] || false
+  end
 
-      errors.add(:worker_id, "has no wages within the period's start and end dates")
-    end
+  def validate_worker_valid_for_period
+    return if worker_valid_for_period?
+
+    errors.add(:worker_id, :not_valid_for_period)
+  end
+
+  def worker_valid_for_period?
+    worker.valid_for_period?(period)
   end
 end

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       end
       resources :periods, only: %i[index create show destroy]
       resources :payrolls, only: %i[index create show destroy] # TODO: remove the create route at the end version
+      resources :payroll_additions
     end
   end
 end
