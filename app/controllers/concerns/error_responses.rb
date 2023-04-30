@@ -30,7 +30,7 @@ module ErrorResponses
   def render_errors(*errors)
     errors = build_errors_array(errors)
 
-    render json: { errors: }, status: :unprocessable_entity
+    render json: { error: errors }, status: :unprocessable_entity
   end
 
   private
@@ -59,6 +59,7 @@ module ErrorResponses
 
   def formatted_error_object(errors, attribute, error)
     object = errors.instance_variable_get('@base').class
+
     return nil unless object.column_names.include?(attribute.to_s) || attribute == :password
 
     message = "#{object.human_attribute_name(attribute)} #{errors.generate_message(attribute, error[:error],
