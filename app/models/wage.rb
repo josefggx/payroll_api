@@ -3,6 +3,9 @@ class Wage < ApplicationRecord
 
   belongs_to :contract
   has_one :company, through: :contract
+  has_one :worker, through: :contract
+  has_many :periods, through: :worker
+  has_many :payrolls, through: :periods
 
   validates :base_salary, presence: true, numericality: { greater_than_or_equal_to: 0, code: '5002' }
   validates :transport_subsidy, inclusion: { in: [true, false] }
@@ -13,9 +16,14 @@ class Wage < ApplicationRecord
   validate :first_wage_initial_date
   validate :transport_subsidy_if_base_salary_low
 
+  attr_accessor :payroll_regeneration_job_enqueued
+
   before_create :set_wage_end_date, :update_last_wage_on_create
   before_update :update_last_wage_on_update
+  before_destroy :prevent_last_wage_deletion
   after_destroy :update_last_wage_on_destroy
+  after_commit :enqueue_payroll_regeneration_job
+  # after_destroy :enqueue_payroll_regeneration_job
 
   def set_wage_end_date
     self.end_date = contract.end_date
@@ -36,8 +44,23 @@ class Wage < ApplicationRecord
     previous_wage&.update_columns(end_date: initial_date - 1.day)
   end
 
+  def enqueue_payroll_regeneration_job
+    return if payroll_regeneration_job_enqueued
+
+    self.payroll_regeneration_job_enqueued = true
+
+    RegenerateWorkerPayrollsJob.perform_later(worker, initial_date, end_date)
+  end
+
+  def prevent_last_wage_deletion
+    if only_one_wage? && !destroyed_by_association.present?
+      errors.add(:id, :cannot_delete_last_wage)
+      throw :abort
+    end
+  end
+
   def initial_date_in_contract_dates
-    return unless initial_date.is_a?(Date) && contract.end_date.present? && initial_date > contract.end_date
+    return unless wage_start_after_contract_end?
 
     errors.add(:initial_date, :out_of_contract_end_date)
   end
@@ -45,20 +68,18 @@ class Wage < ApplicationRecord
   def initial_date_greater_than_last
     return unless initial_date.is_a?(Date)
 
-    last_wage_initial_date = contract.wages.order(initial_date: :desc).limit(1).pluck(:initial_date).first
-
-    return unless last_wage_initial_date.present? && initial_date < last_wage_initial_date
-
-    errors.add(:initial_date, :invalid)
+    if initial_date_before_last_wage? && !only_one_wage?
+      errors.add(:initial_date, :should_be_after_last_wage)
+    end
   end
 
   def first_wage_initial_date
     return if contract.wages.count.zero?
 
-    if initial_date <= contract.initial_date && new_record?
+    if wage_start_before_contract? && new_record?
       errors.add(:initial_date, :out_of_contract_range)
-    elsif persisted? && contract.wages.count == 1
-      errors.add(:initial_date, :not_equal_to_contract) if initial_date != contract.initial_date
+    elsif wage_date_not_equal_to_contract? && only_one_wage?
+      errors.add(:initial_date, :not_equal_to_contract)
     end
   end
 
@@ -66,5 +87,27 @@ class Wage < ApplicationRecord
     return unless base_salary.present? && base_salary < (MINIMUM_WAGE * 2) && !transport_subsidy?
 
     errors.add(:transport_subsidy, :mandatory_transport_subsidy)
+  end
+
+  def initial_date_before_last_wage?
+    last_wage_initial_date = contract.wages.order(initial_date: :desc).limit(1).pluck(:initial_date).first
+
+    last_wage_initial_date.present? && initial_date <= last_wage_initial_date
+  end
+
+  def wage_start_before_contract?
+    initial_date.is_a?(Date) && initial_date <= contract.initial_date
+  end
+
+  def wage_start_after_contract_end?
+    initial_date.is_a?(Date) && contract.end_date.present? && initial_date > contract.end_date
+  end
+
+  def only_one_wage?
+    contract.wages.count == 1
+  end
+
+  def wage_date_not_equal_to_contract?
+    persisted? && initial_date != contract.initial_date
   end
 end
