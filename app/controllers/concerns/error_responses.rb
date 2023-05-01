@@ -13,7 +13,7 @@ module ErrorResponses
   end
 
   def render_error_not_authenticated
-    render json: { error: { message: "No estás autenticado", code: '0002', object: 'Authentication' } },
+    render json: { error: { message: 'No estás autenticado', code: '0002', object: 'Authentication' } },
            status: :unauthorized
   end
 
@@ -23,7 +23,7 @@ module ErrorResponses
   end
 
   def render_error_not_found(object)
-    render json: { error: { message: 'Record not found.', code: '0004', object: object.model } },
+    render json: { error: [{ message: 'Registro no encontrado', code: '0004', object: object.model }] },
            status: :not_found
   end
 

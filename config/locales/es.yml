@@ -71,12 +71,12 @@ es:
         name: Nombre
     errors:
       messages:
-#        blank: "no puede estar en blanco"
-#        too_short: "es demasiado corto (mínimo %{count} caracteres)"
-#        too_long: "es demasiado largo (máximo %{count} caracteres)"
-#        taken: "ya existe"
-#        not_a_number: "debe ser un número"
-#        not_a_date: "no es una fecha"
+        blank: "no puede estar en blanco"
+        too_short: "es demasiado corto (mínimo %{count} caracteres)"
+        too_long: "es demasiado largo (máximo %{count} caracteres)"
+        taken: "ya existe"
+        not_a_number: "debe ser un número"
+        not_a_date: "no es una fecha"
       models:
         user:
           attributes:
@@ -151,11 +151,28 @@ es:
               greater_than_or_equal_to: "debe ser mayor o igual que la fecha inicial"
             contract_id:
               cannot_delete_last_wage: "tiene un único salario, y no puede ser eliminado"
-
+        period:
+          attributes:
+            start_date:
+              invalid_year: "inválida. Debe tener un año válido en formato (AAAA)"
+              invalid_month: "inválida. Debe tener un mes válido en formato (MM)"
+              not_unique: "ya ha sido tomada. Ya tiene un periodo en esta fecha"
         payroll:
           attributes:
             worker_id:
               taken: "ya tiene una nómina en este periodo"
+              not_valid_for_period: "no tiene fechas de pago en este periodo"
             worker_payment:
               greater_than: "no puede ser menor ni igual que 0"
-
+        payroll_addition:
+          attributes:
+            name:
+              blank: "no puede estar en blanco"
+            addition_type:
+              blank: "no puede estar en blanco"
+              inclusion: "debe ser 'salary_income', 'non_salary_income', o 'deduction'"
+            amount:
+              not_a_number: "debe ser un número"
+              greater_than_or_equal_to: "debe ser un número positivo"
+              invalid_deduction: "de la deducción es inválido. El pago del trabajador sería menor o igual a 0"
+              blank: "no puede estar en blanco"

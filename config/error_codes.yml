@@ -63,3 +63,25 @@ wage:
     greater_than_or_equal_to: "0531"
   contract_id:
     cannot_delete_last_wage: "0540"
+period:
+  start_date:
+    invalid_year: "0600"
+    invalid_month: "0601"
+    not_unique: "0602"
+payroll:
+  worker_id:
+    taken: "0700"
+    not_valid_for_period: "0701"
+  worker_payment:
+    greater_than: "0711"
+payroll_addition:
+  name:
+    blank: "0800"
+  addition_type:
+    blank: "0810"
+    inclusion: "0811"
+  amount:
+    blank: "0820"
+    not_a_number: "0821"
+    greater_than_or_equal_to: "0822"
+    invalid_deduction: "0823"
