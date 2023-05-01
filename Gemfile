@@ -26,6 +26,8 @@ gem 'bcrypt', '~> 3.1.7'
 
 gem 'jwt', '~> 2.7'
 
+gem 'i18n_generators', '~> 2.2', '>= 2.2.2'
+
 # Linter and code style review [https://github.com/rubocop/rubocop-rails]
 gem 'rubocop-rails', '~> 2.19', '>= 2.19.1'
 
