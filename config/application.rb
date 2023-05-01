@@ -17,6 +17,9 @@ module PayrollApi
     # Set default locale to something other than :en
     I18n.default_locale = :es
 
+    config.autoload_paths += %W(#{config.root}/app/queries)
+
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
