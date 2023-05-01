@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: wages
+#
+#  id                :uuid             not null, primary key
+#  base_salary       :decimal(15, 2)   not null
+#  transport_subsidy :boolean          not null
+#  initial_date      :date             not null
+#  end_date          :date
+#  contract_id       :uuid             not null
+#
 class Wage < ApplicationRecord
   include PayrollHelper
 
@@ -7,8 +18,8 @@ class Wage < ApplicationRecord
   has_many :periods, through: :worker
   has_many :payrolls, through: :periods
 
-  validates :base_salary, presence: true, numericality: { greater_than_or_equal_to: 0, code: '5002' }
-  validates :transport_subsidy, inclusion: { in: [true, false] }
+  validates :base_salary, presence: true, numericality: { greater_than: 0, if: -> { base_salary.present? } }
+  validates :transport_subsidy, inclusion: { in: [true, false], if: -> { transport_subsidy.present? } }
   validates :initial_date, presence: true, date: true
 
   validate :initial_date_in_contract_dates
@@ -23,7 +34,6 @@ class Wage < ApplicationRecord
   before_destroy :prevent_last_wage_deletion
   after_destroy :update_last_wage_on_destroy
   after_commit :enqueue_payroll_regeneration_job
-  # after_destroy :enqueue_payroll_regeneration_job
 
   def set_wage_end_date
     self.end_date = contract.end_date
@@ -54,7 +64,7 @@ class Wage < ApplicationRecord
 
   def prevent_last_wage_deletion
     if only_one_wage? && !destroyed_by_association.present?
-      errors.add(:id, :cannot_delete_last_wage)
+      errors.add(:contract_id, :cannot_delete_last_wage)
       throw :abort
     end
   end
@@ -62,7 +72,7 @@ class Wage < ApplicationRecord
   def initial_date_in_contract_dates
     return unless wage_start_after_contract_end?
 
-    errors.add(:initial_date, :out_of_contract_end_date)
+    errors.add(:initial_date, :out_of_contract_range)
   end
 
   def initial_date_greater_than_last

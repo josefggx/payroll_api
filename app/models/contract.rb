@@ -22,7 +22,8 @@ class Contract < ApplicationRecord
   validates :worker, presence: true
   validates :job_title, presence: true
   validates :health_provider, presence: true
-  validates :term, presence: true, inclusion: { in: CONTRACT_TERMS, if: -> { term.present? } }
+  validates :term, presence: true,
+                   inclusion: { in: CONTRACT_TERMS, if: -> { term.present? } }
 
   validates :risk_type, presence: true,
                         inclusion: { in: RISK_TYPES.keys, values: RISK_TYPES.keys, if: -> { risk_type.present? } }

@@ -16,8 +16,6 @@ class PayrollCalculator
   def calculate_payroll
     calculate_average_base_salary
 
-    puts "BASE SALARY #{@base_salary}"
-
     additional_salary_income = calculate_extra_salary_income
     non_salary_income = calculate_non_salary_income
 
@@ -95,11 +93,7 @@ class PayrollCalculator
     wages.each do |wage|
       days_worked = calculate_days_worked(wages, days_in_month, wage)
 
-      puts "days_worked: #{days_worked}"
-
       wage_base_salary = calculate_base_salary(wage.base_salary, days_worked, days_in_month)
-
-      puts "wage_base_salary: #{wage_base_salary}"
 
       @base_salary += wage_base_salary
 

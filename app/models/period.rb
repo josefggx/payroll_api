@@ -1,4 +1,15 @@
+# == Schema Information
+#
+# Table name: periods
+#
+#  id         :uuid             not null, primary key
+#  company_id :uuid             not null
+#  start_date :date             not null
+#  end_date   :date             not null
+#
 class Period < ApplicationRecord
+  include StringValidations
+
   belongs_to :company
   has_many :payrolls, dependent: :destroy
   has_many :payroll_additions, through: :payrolls
@@ -37,10 +48,10 @@ class Period < ApplicationRecord
   end
 
   def valid_year?
-    year.present? && /\A\d{4}\z/.match?(year.to_s) && year.to_i >= 0
+    year.present? && regex_valid_year.match?(year.to_s)
   end
 
   def valid_month?
-    month.present? && /^(0?[1-9]|1[0-2])$/.match?(month.to_s)
+    month.present? && regex_valid_month.match?(month.to_s)
   end
 end

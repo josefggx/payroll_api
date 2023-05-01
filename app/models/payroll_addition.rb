@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: payroll_additions
+#
+#  id            :uuid             not null, primary key
+#  payroll_id    :uuid             not null
+#  name          :string
+#  addition_type :enum             not null
+#  amount        :decimal(15, 2)   not null
+#
 class PayrollAddition < ApplicationRecord
   belongs_to :payroll
   has_one :company, through: :payroll
@@ -17,10 +27,10 @@ class PayrollAddition < ApplicationRecord
   scope :salary_income, -> { where(addition_type: :salary_income) }
 
   validates :name, presence: true
-  validates :amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :addition_type, inclusion: { in: addition_types }
+  validates :amount, presence: true, numericality: { greater_than_or_equal_to: 0, if: -> { amount.present? } }
+  validates :addition_type, presence: true, inclusion: { in: addition_types, if: -> { addition_type.present? } }
 
-  validate :deduction_less_than_amount
+  validate :deduction_less_than_amount, if: -> { amount.present? }
 
   after_save :update_payroll
   before_destroy :update_payroll
@@ -32,11 +42,6 @@ class PayrollAddition < ApplicationRecord
   def deduction_less_than_amount
     old_amount = amount_was || 0
     new_deduction = amount - old_amount
-
-    puts "amount = #{amount}"
-    puts "old_amount = #{old_amount}"
-    puts "new_deduction = #{new_deduction}"
-
 
     return unless deduction? && (new_deduction >= payroll.worker_payment)
 

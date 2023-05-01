@@ -30,7 +30,7 @@ module V1
       end
 
       def set_contract
-        @contract = Contract.find(params[:contract_id])
+        @contract = @company.contracts.find(params[:contract_id])
       end
 
       def authorize

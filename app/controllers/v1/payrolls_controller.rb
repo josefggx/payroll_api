@@ -7,11 +7,9 @@ module V1
     before_action :set_period, only: %i[create]
 
     def index
-      @payrolls = @company.payrolls
-
-      puts "PERIOD: #{@period}"
-
-      render json: @payrolls, status: :ok
+      @payrolls = @company.payrolls.includes(:period, :worker)
+                          .order('periods.end_date DESC, workers.name')
+                          .references(:periods, :workers)
     end
 
     def create
@@ -19,18 +17,14 @@ module V1
 
       if result[:success]
         @payroll = result[:payroll]
+        render :create, status: :created
       else
-        puts "ERRORES: #{result[:errors].inspect}"
-
         render_errors(result[:errors])
       end
     end
 
     def show
-      @payroll = Payroll.find(params[:id])
-      # @period = Period.includes(:payrolls).find(params[:id])
-
-      render json: @payroll, status: :ok
+      @payroll
     end
 
     def destroy
@@ -52,7 +46,7 @@ module V1
     end
 
     def set_payroll
-      @payroll = @company.payrolls.find(params[:id])
+      @payroll = @company.payrolls.includes(:period, :worker).find(params[:id])
     end
 
     def set_worker

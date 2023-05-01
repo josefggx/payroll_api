@@ -6,31 +6,27 @@ module V1
     before_action :set_payroll, only: %i[create]
 
     def index
-      @payroll_additions = @company.payroll_additions
-
-      render json: @payroll_additions, status: :ok
+      @payroll_additions = @company.payroll_additions.includes(:period).order('periods.end_date DESC,
+                                                                              addition_type, payroll_id')
     end
 
     def create
       @payroll_addition = PayrollAddition.new(payroll_addition_params)
 
       if @payroll_addition.save
-        render json: @payroll_addition, status: :created
+        render :create, status: :created
       else
-        # puts "ERRORS: #{@payroll_addition.errors.inspect}"
         render_errors(@payroll_addition.errors)
       end
     end
 
     def show
       @payroll_addition = PayrollAddition.find(params[:id])
-
-      render json: @payroll_addition, status: :ok
     end
 
     def update
       if @payroll_addition.update(payroll_addition_params)
-        render json: @payroll_addition, status: :ok
+        render :create, status: :ok
       else
         render_errors(@payroll_addition.errors)
       end

@@ -36,7 +36,7 @@ module V1
       end
 
       def set_current_wage
-        @contract = Contract.find(params[:contract_id])
+        @contract = @company.contracts.find(params[:contract_id])
         @current_wage = @contract.wages.order(initial_date: :desc).first
       end
 

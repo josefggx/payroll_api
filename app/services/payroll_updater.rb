@@ -12,7 +12,7 @@ class PayrollUpdater
     @payroll.update(**payroll_fields)
 
     if @payroll.save
-      { success: true, payroll: @payroll}
+      { success: true, payroll: @payroll }
     else
       { success: false, errors: @payroll.errors }
     end
