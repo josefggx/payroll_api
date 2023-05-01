@@ -1,24 +1,89 @@
 es:
   activerecord:
+    models:
+      company: Empresa
+      contract: Contrato
+      payroll: Nómina
+      payroll_addition: Adición de nómina
+      period: Período
+      user: Usuario
+      wage: Salario
+      worker: Empleado
     attributes:
-      user:
-        email: "Correo electrónico"
-        password: "Contraseña"
       company:
-        nit: "NIT"
-        name: "Nombre"
-        user: "Usuario"
+        name: Nombre
+        nit: NIT
+        user_id: :activerecord.models.user
+      contract:
+        end_date: Fecha final
+        health_provider: Proveedor de salud
+        initial_date: Fecha inicial
+        job_title: Cargo
+        risk_type: Tipo de riesgo
+        term: Término del contrato
+        worker_id: :activerecord.models.worker
+      payroll:
+        additional_salary_income: Ingresos salariales adicionales
+        arl: ARL
+        base_salary: Salario base
+        company_healthcare: Costo de salud de la empresa
+        company_pension: Costo de la pensión de la compañía
+        compensation_fund: Fondo de compensación
+        deductions: Deducciones
+        icbf: ICBF
+        interest: Intereses sobre las cesantías
+        non_salary_income: Ingresos no salariales
+        period_id: :activerecord.models.period
+        premium: Prima
+        sena: Sena
+        severance: Cesantías
+        solidarity_fund: Fondo de solidaridad
+        subsistence_account: Cuenta de subsistencia
+        total_company_cost: Costo total de la empresa
+        transport_subsidy: Subsidio de transporte
+        vacation: Vacaciones
+        worker_id: :activerecord.models.worker
+        worker_healthcare: Salud del trabajador
+        worker_payment: Pago del empleado
+        worker_pension: Pensión del trabajador
+      payroll_addition:
+        addition_type: Tipo de adición
+        amount: Monto
+        name: Nombre
+        payroll: :activerecord.models.payroll
+      period:
+        company_id: :activerecord.models.company
+        end_date: Fecha final
+        start_date: Fecha de inicio
+      user:
+        email: Correo electrónico
+        password: Contraseña
+      wage:
+        id: ID del salario
+        base_salary: Salario base
+        contract_id: :activerecord.models.contract
+        end_date: Fecha final
+        initial_date: Fecha inicial
+        transport_subsidy: Subsidio de transporte
+      worker:
+        company: :activerecord.models.company
+        id_number: Número de identificación
+        name: Nombre
     errors:
       messages:
-        blank: "no puede estar en blanco"
-        too_short: "es demasiado corto (mínimo %{count} caracteres)"
-        too_long: "es demasiado largo (máximo %{count} caracteres)"
-        taken: "ya existe"
+#        blank: "no puede estar en blanco"
+#        too_short: "es demasiado corto (mínimo %{count} caracteres)"
+#        too_long: "es demasiado largo (máximo %{count} caracteres)"
+#        taken: "ya existe"
+#        not_a_number: "debe ser un número"
+#        not_a_date: "no es una fecha"
       models:
         user:
           attributes:
             email:
+              blank: "no puede estar en blanco"
               taken: "ya existe"
+              invalid: "debe tener un formato válido"
             password:
               too_short: "es demasiado corta (mínimo %{count} caracteres)"
         company:
@@ -27,17 +92,70 @@ es:
               blank: "debe ser válido"
               required: "debe ser válido"
             nit:
-              taken: "ya existe"
+              taken: "ya existe, debe ser único"
               blank: "no puede estar en blanco"
-              not_a_number: "debe ser un número positivo"
-              greater_than: "debe ser un número positivo"
+              not_a_number: "debe ser un número"
+              greater_than: "debe ser un número"
+              wrong_length: "debe tener exactamente 9 dígitos"
+            name:
+              blank: "no puede estar en blanco"
+              too_short: "es demasiado corto (mínimo %{count} caracteres)"
+              too_long: "es demasiado largo (máximo %{count} caracteres)"
+              invalid: "debe tener un formato válido y no contener caracteres especiales"
+        worker:
+          attributes:
+            name:
+              blank: "no puede estar en blanco"
+              too_short: "es demasiado corto (mínimo %{count} caracteres)"
+              too_long: "es demasiado largo (máximo %{count} caracteres)"
+              invalid: "debe tener un formato válido y no contener caracteres especiales"
+            id_number:
+              taken: "ya existe, debe ser único"
+              blank: "no puede estar en blanco"
+              not_a_number: "debe ser un número"
+              greater_than: "debe ser un número"
+              too_short: "debe tener entre 6 y 10 dígitos"
+              too_long: "debe tener entre 6 y 10 dígitos"
               wrong_length: "debe tener exactamente 9 dígitos"
         contract:
           attributes:
+            job_title:
+              blank: "no puede estar en blanco"
+            risk_type:
+              blank: "no puede estar en blanco"
+              inclusion: "debe ser 'risk_1', 'risk_2','risk_3','risk_4' o 'risk_5'"
+            term:
+              blank: "no puede estar en blanco"
+              inclusion: "debe ser 'indefinite' o 'fixed'"
             initial_date:
               blank: "debe ser una fecha válida y en formato (AAAA-MM-DD)"
               greater_than: "debe ser una fecha mayor a %{count}"
             end_date:
+              not_a_date: "no es una fecha"
               greater_than_or_equal_to: "debe ser mayor o igual que la fecha inicial"
               missing_end_date: "debe estar presente para los contratoa a término fijo"
               unexpected_end_date: "debe estar vacía para los contratos a término indefinido"
+        wage:
+          attributes:
+            base_salary:
+              blank: "no puede estar en blanco"
+              greater_than: "no puede ser menor que 0"
+            transport_subsidy:
+              mandatory_transport_subsidy: "es obligatorio si el salario es menor a dos salarios mínimos"
+            initial_date:
+              should_be_after_last_wage: "debe empezar después que el último salario"
+              out_of_contract_range: "debe estar entre las fechas del contrato"
+              not_equal_to_contract: "debe coincidir con la fecha inicial del contrato si solo tienes un salario"
+            end_date:
+              not_a_date: "no es una fecha"
+              greater_than_or_equal_to: "debe ser mayor o igual que la fecha inicial"
+            contract_id:
+              cannot_delete_last_wage: "tiene un único salario, y no puede ser eliminado"
+
+        payroll:
+          attributes:
+            worker_id:
+              taken: "ya tiene una nómina en este periodo"
+            worker_payment:
+              greater_than: "no puede ser menor ni igual que 0"
+

@@ -1,12 +1,65 @@
+user:
+  email:
+    blank: '0100'
+    taken: '0101'
+    invalid: '1002'
+  password:
+    too_short: '0110'
+company:
+  nit:
+    blank: '0200'
+    taken: '0201'
+    not_a_number: "0202"
+    greater_than: "0203"
+    wrong_length: "0204"
+  name:
+    blank: "0210"
+    too_short: "0211"
+    too_long: "0212"
+    invalid: "0213"
 worker:
   name:
-    blank: '0301'
-
+    blank: "0300"
+    too_short: "0301"
+    too_long: "0302"
+    invalid: "0303"
+  id_number:
+    blank: "0310"
+    taken: "0311"
+    not_a_number: "3012"
+    greater_than: "3012"
+    too_short: "0313"
+    too_long:  "0313"
+    wrong_length: "0314"
 contract:
+  job_title:
+    blank: "0400"
+  risk_type:
+    blank: "4010"
+    inclusion: "0411"
+  term:
+    blank: "0420"
+    inclusion: "0421"
+  initial_date:
+    blank: "0430"
+    greater_than: "0431"
   end_date:
-    not_a_date: '0462'
-
+    not_a_date: '0440'
+    greater_than_or_equal_to: "0441"
+    missing_end_date: "0442"
+    unexpected_end_date: "0443"
 wage:
   base_salary:
-    greater_than_or_equal_to: '5002'
-
+    blank: "0500"
+    greater_than: "0501"
+  transport_subsidy:
+    mandatory_transport_subsidy: "0510"
+  initial_date:
+    should_be_after_last_wage: "0520"
+    out_of_contract_range: "0521"
+    not_equal_to_contract: "0522"
+  end_date:
+    not_a_date: "0530"
+    greater_than_or_equal_to: "0531"
+  contract_id:
+    cannot_delete_last_wage: "0540"

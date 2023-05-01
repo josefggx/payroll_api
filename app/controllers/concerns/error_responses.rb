@@ -8,17 +8,17 @@ module ErrorResponses
   end
 
   def render_error_wrong_credentials
-    render json: { error: { message: 'Email or password are invalid.', code: '0001', object: 'Authentication' } },
+    render json: { error: { message: 'Correo electrónico o contraseña incorrectos', code: '0001', object: 'Authentication' } },
            status: :unauthorized
   end
 
   def render_error_not_authenticated
-    render json: { error: { message: "You're not authenticated.", code: '0002', object: 'Authentication' } },
+    render json: { error: { message: "No estás autenticado", code: '0002', object: 'Authentication' } },
            status: :unauthorized
   end
 
   def render_error_not_authorized(object)
-    render json: { error: { message: 'You are not authorized to perform this action', code: '0003',
+    render json: { error: { message: 'No estás autorizado para realizar esta acción', code: '0003',
                             object: object.capitalize } }, status: :unauthorized
   end
 
@@ -59,6 +59,8 @@ module ErrorResponses
 
   def formatted_error_object(errors, attribute, error)
     object = errors.instance_variable_get('@base').class
+
+    puts "errors: #{errors.inspect}"
 
     return nil unless object.column_names.include?(attribute.to_s) || attribute == :password
 
