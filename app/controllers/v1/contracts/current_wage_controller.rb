@@ -6,12 +6,12 @@ module V1
       before_action :set_current_wage
 
       def show
-        render json: @current_wage
+        @current_wage
       end
 
       def update
         if @current_wage.update(wage_params)
-          render json: @current_wage, status: :ok
+          render :update, status: :ok
         else
           render_errors(@current_wage&.errors)
         end

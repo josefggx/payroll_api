@@ -5,26 +5,25 @@ module V1
 
     def index
       @companies = @current_user.companies
-      render json: @companies, status: :ok
     end
 
     def create
       @company = Company.new(company_params)
 
       if @company.save
-        render json: @company, status: :created
+        render :create, status: :created
       else
         render_errors(@company.errors)
       end
     end
 
     def show
-      render json: @company
+      @company
     end
 
     def update
       if @company.update(company_params)
-        render json: @company, status: :ok
+        render :create, status: :ok
       else
         render_errors(@company.errors)
       end

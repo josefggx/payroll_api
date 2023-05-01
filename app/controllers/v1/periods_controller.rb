@@ -2,19 +2,20 @@ module V1
   class PeriodsController < ApplicationController
     before_action :set_company
     before_action :authorize
-    before_action :set_period, only: %i[destroy]
+    before_action :set_period, only: %i[show destroy]
 
     def index
-      @periods = @company.periods
-
-      render json: @periods, status: :ok
+      periods_query = PeriodsQuery.new(@company)
+      @periods = periods_query.periods_with_payrolls_totals
     end
 
     def create
       @period = Period.new(period_params)
 
       if @period.save
-        render json: @period, status: :created
+        GeneratePeriodPayrollsJob.perform_later(@period)
+
+        render :create, status: :created
       else
         puts "ERRORS: #{@period.errors.inspect}"
         render_errors(@period.errors)
@@ -22,10 +23,10 @@ module V1
     end
 
     def show
-      @period = Period.find(params[:id])
-      # @period = Period.includes(:payrolls).find(params[:id])
+      periods_query = PeriodsQuery.new(@company)
+      @period = periods_query.period_with_payrolls_and_worker_info(@period.id)
 
-      render json: @period, status: :ok
+      render :show, status: :ok
     end
 
     def destroy
@@ -47,7 +48,7 @@ module V1
     end
 
     def set_period
-      @period = Period.find(params[:id])
+      @period = @company.periods.find(params[:id])
     end
 
     def authorize
@@ -55,13 +56,3 @@ module V1
     end
   end
 end
-
-# def create
-#   result = WorkerCreator.call(worker_create_params)
-#
-#   if result[:success]
-#     @worker = result[:worker]
-#   else
-#     render_errors(*result[:errors])
-#   end
-# end

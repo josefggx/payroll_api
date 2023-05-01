@@ -9,12 +9,12 @@ module V1
     end
 
     def show
-      @contract = Contract.includes(:worker, :wages).find(params[:id])
+      @contract = @company.contracts.includes(:worker, :wages).find(params[:id])
     end
 
     def update
       if @contract.update(contract_params)
-        render json: @contract, status: :ok
+        render :update, status: :ok
       else
         render_errors(@contract.errors)
       end

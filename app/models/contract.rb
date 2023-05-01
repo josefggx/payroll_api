@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: contracts
+#
+#  id              :uuid             not null, primary key
+#  job_title       :string           not null
+#  term            :enum             not null
+#  health_provider :string           not null
+#  risk_type       :enum             not null
+#  initial_date    :date             not null
+#  end_date        :date
+#  worker_id       :uuid             not null
+#
 class Contract < ApplicationRecord
   include DateConstants
   include PayrollHelper
@@ -9,18 +22,18 @@ class Contract < ApplicationRecord
   validates :worker, presence: true
   validates :job_title, presence: true
   validates :health_provider, presence: true
-  validates :term, inclusion: { in: CONTRACT_TERMS }
-  validates :risk_type, presence: true, inclusion: { in: RISK_TYPES.keys }
+  validates :term, presence: true, inclusion: { in: CONTRACT_TERMS, if: -> { term.present? } }
 
-  validates :initial_date,
-            presence: { code: '0460' },
-            comparison: { greater_than: MIN_VALID_DATE, code: '0461', if: -> { initial_date.present? } }
+  validates :risk_type, presence: true,
+                        inclusion: { in: RISK_TYPES.keys, values: RISK_TYPES.keys, if: -> { risk_type.present? } }
 
-  validates :end_date,
-            date: { code: '0462' },
-            allow_blank: true,
-            comparison: { greater_than_or_equal_to: :initial_date, code: '0463',
-                          if: -> { initial_date.present? && end_date.present? } }
+  validates :initial_date, presence: true,
+                           comparison: { greater_than: MIN_VALID_DATE, if: -> { initial_date.present? } }
+
+  validates :end_date, date: true,
+                       allow_blank: true,
+                       comparison: { greater_than_or_equal_to: :initial_date,
+                                     if: -> { initial_date.present? && end_date.present? } }
 
   validate :validate_end_date_presence
 

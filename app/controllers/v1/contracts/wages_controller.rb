@@ -7,15 +7,13 @@ module V1
 
       def index
         @wages = @contract.wages
-
-        render json: @wages, status: :ok
       end
 
       def create
         @wage = @contract.wages.new(wage_params)
 
         if @wage.save
-          render json: @wage, status: :created
+          render :create, status: :created
         else
           render_errors(@wage.errors)
         end

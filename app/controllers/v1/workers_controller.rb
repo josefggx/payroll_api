@@ -10,9 +10,10 @@ module V1
 
     def create
       result = WorkerCreator.call(worker_create_params)
+      @worker = result[:worker]
 
       if result[:success]
-        @worker = result[:worker]
+        render :create, status: :created
       else
         render_errors(*result[:errors])
       end
@@ -24,7 +25,7 @@ module V1
 
     def update
       if @worker.update(worker_update_params)
-        render json: @worker, status: :ok
+        render :update, status: :ok
       else
         render_errors(@worker.errors)
       end

@@ -1,3 +1,3 @@
 json.data @users do |user|
-  json.id user.id
+  json.partial! 'user', user: user
 end
