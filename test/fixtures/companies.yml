@@ -1,9 +1,9 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+company:
+  name: Example Company
+  nit: 1234234234
+  user: valid_user
 
-one:
-  name: MyString
-  nit: 1
-
-two:
-  name: MyString
-  nit: 1
+another_company:
+  name: Another Company
+  nit: 0987654321
+  user: another_valid_user

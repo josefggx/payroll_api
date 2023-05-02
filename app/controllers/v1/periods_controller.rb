@@ -17,7 +17,6 @@ module V1
 
         render :create, status: :created
       else
-        puts "ERRORS: #{@period.errors.inspect}"
         render_errors(@period.errors)
       end
     end

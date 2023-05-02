@@ -1,15 +1,20 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+wage:
+  base_salary: 1_300_000
+  transport_subsidy: true
+  initial_date: 2023-01-01
+  end_date: 2023-12-31
+  contract: contract
 
-one:
-  base_salary: 
-  transport_subsidy: MyString
-  initial_date: 2023-04-20
-  end_date: 2023-04-20
-  contract: one
+wage_two:
+  base_salary: 2_300_000
+  transport_subsidy: true
+  initial_date: 2023-02-01
+  end_date: 2023-12-31
+  contract: contract
 
-two:
-  base_salary: 
-  transport_subsidy: MyString
-  initial_date: 2023-04-20
-  end_date: 2023-04-20
-  contract: two
+another_wage:
+  base_salary: 3_200_000
+  transport_subsidy: false
+  initial_date: 2023-01-01
+  end_date:
+  contract: another_contract

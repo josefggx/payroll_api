@@ -1,21 +1,17 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+contract:
+  initial_date: 2023-01-01
+  end_date: 2023-12-31
+  job_title: Desarrollador
+  term: fixed
+  health_provider: Sura
+  risk_type: risk_1
+  worker: worker
 
-one:
-  contract_category: MyString
-  term: MyString
-  initial_day: 2023-04-20
-  end_date: 2023-04-20
-  job_title: MyString
-  term: MyString
-  health_provider: MyString
-  worker: one
-
-two:
-  contract_category: MyString
-  term: MyString
-  initial_day: 2023-04-20
-  end_date: 2023-04-20
-  job_title: MyString
-  term: MyString
-  health_provider: MyString
-  worker: two
+another_contract:
+  initial_date: 2023-01-01
+  end_date:
+  job_title: Abogado
+  term: indefinite
+  health_provider: Sura
+  risk_type: risk_1
+  worker: another_worker

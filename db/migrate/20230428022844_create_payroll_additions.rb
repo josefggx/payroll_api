@@ -4,7 +4,7 @@ class CreatePayrollAdditions < ActiveRecord::Migration[7.0]
 
     create_table :payroll_additions, id: :uuid do |t|
       t.references :payroll, null: false, foreign_key: true, type: :uuid
-      t.string :name
+      t.string :name, null: false
       t.enum :addition_type, null: false, enum_type: 'addition_type'
       t.decimal :amount, precision: 15, scale: 2, null: false
 

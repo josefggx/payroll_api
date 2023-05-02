@@ -1,11 +1,11 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+payroll_addition_one:
+  payroll: payroll
+  name: "Celular"
+  addition_type: "salary_income"
+  amount: 10
 
-one:
-  name: MyString
-  type: 
-  amount: 9.99
-
-two:
-  name: MyString
-  type: 
-  amount: 9.99
+payroll_addition_two:
+  payroll: another_payroll
+  name: "Celular"
+  addition_type: "deduction"
+  amount: 1

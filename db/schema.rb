@@ -45,7 +45,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_022844) do
 
   create_table "payroll_additions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "payroll_id", null: false
-    t.string "name"
+    t.string "name", null: false
     t.enum "addition_type", null: false, enum_type: "addition_type"
     t.decimal "amount", precision: 15, scale: 2, null: false
     t.datetime "created_at", null: false

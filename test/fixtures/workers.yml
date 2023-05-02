@@ -1,11 +1,9 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+worker:
+  name: Yoshi
+  id_number: 123456789
+  company: company
 
-one:
-  company: one
-  name: MyString
-  id_number: MyString
-
-two:
-  company: two
-  name: MyString
-  id_number: MyString
+another_worker:
+  name: Mbappe
+  id_number: 987654321
+  company: another_company

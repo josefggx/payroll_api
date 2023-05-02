@@ -1,11 +1,14 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+period:
+  company: company
+  start_date: 2023-01-01
+  end_date: 2023-01-31
 
-one:
-  company: one
-  start_date: 2023-04-26
-  end_date: 2023-04-26
+period_two:
+  company: another_company
+  start_date: 2022-02-01
+  end_date: 2022-02-28
 
-two:
-  company: two
-  start_date: 2023-04-26
-  end_date: 2023-04-26
+another_period:
+  company: company
+  start_date: 2023-01-01
+  end_date: 2023-01-01

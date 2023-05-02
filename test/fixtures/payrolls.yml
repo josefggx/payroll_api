@@ -1,8 +1,6 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  period: one
-  worker: one
+payroll:
+  period: another_period
+  worker: worker
   base_salary: 1.5
   transport_subsidy: 1.5
   additional_salary_income: 1.5
@@ -25,9 +23,9 @@ one:
   worker_payment: 1.5
   total_company_cost: 1.5
 
-two:
-  period: two
-  worker: two
+another_payroll:
+  period: another_period
+  worker: another_worker
   base_salary: 1.5
   transport_subsidy: 1.5
   additional_salary_income: 1.5

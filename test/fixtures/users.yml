@@ -1,20 +1,11 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id              :uuid             not null, primary key
-#  email           :string           not null
-#  password_digest :string           not null
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#
+valid_user:
+  email: mario@example.com
+  password_digest: <%= BCrypt::Password.create('valid_password_1') %>
 
-one:
-  name: MyString
-  username: MyString
-  email: MyString
+another_valid_user:
+  email: luigi@example.com
+  password_digest: <%= BCrypt::Password.create('valid_password_2') %>
 
-two:
-  name: MyString
-  username: MyString
-  email: MyString
+invalid_user:
+  email: ém@il!invalid@example.com
+  password_digest: <%= BCrypt::Password.create('wrong_password') %>

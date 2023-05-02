@@ -4,9 +4,9 @@ Company.create(name: 'Nominapp', nit: 123_345_679, user_id: user1.id)
 worker1 = Worker.create(name: 'Koopa Troopa', id_number: 1_234_098_632, company_id: company1.id)
 
 contract1 = Contract.create(job_title: 'Secretario', term: 'indefinite', risk_type: 'risk_1', health_provider: 'Sura',
-                            initial_date: '2023-03-02', end_date: nil, worker_id: worker1.id)
+                            initial_date: '2023-02-01', end_date: nil, worker_id: worker1.id)
 
-wage1 = Wage.create(base_salary: 1_300_000, transport_subsidy: true, initial_date: '2023-03-02', end_date: nil,
+wage1 = Wage.create(base_salary: 1_000_000, transport_subsidy: true, initial_date: '2023-03-02', end_date: nil,
                     contract_id: contract1.id)
 
 user2 = User.create(email: 'wario@gmail.com', password: '123456')
